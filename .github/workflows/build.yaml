@@ -1,0 +1,21 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+jobs:
+  docker-image:
+    strategy:
+      matrix:
+        ubuntu: ["16.04", "18.04", "20.04"]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKERIO_USERNAME }}
+          password: ${{ secrets.DOCKERIO_PASSWORD }}
+      - run: |
+          UBUNTU_VERSION=${{ matrix.ubuntu }} ./build.sh
